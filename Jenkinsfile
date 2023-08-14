@@ -9,17 +9,17 @@ pipeline {
 
 
   stages {
-    stage('Build') {
-      parallel {
-        stage('Compile') {
-          steps {
-            container('maven') {
-              sh 'mvn compile'
-            }
-          }
-        }
-      }
-    }
+//     stage('Build') {
+//       parallel {
+//         stage('Compile') {
+//           steps {
+//             container('maven') {
+//               sh 'mvn compile'
+//             }
+//           }
+//         }
+//       }
+//     }
 
     stage('Package') {
       parallel {
@@ -34,7 +34,8 @@ pipeline {
         stage('Docker BnP') {
            steps {
                container(name: 'kaniko') {
-                   sh 'echo $DOCKER_HUB_CREDENTIAL'
+                   sh 'echo "{\"auths\":{\"https://index.docker.io/v1/\":{\"auth\":\"${$DOCKER_HUB_CREDENTIAL}\"}}}" > docker.json'
+                   sh 'cat docker.json'
                }
            }
         }
