@@ -34,7 +34,7 @@ spec:
         - cat
       tty: true
     - name: kaniko
-      image: gcr.io/kaniko-project/executor:debug
+      image: gcr.io/kaniko-project/executor:arm64
       imagePullPolicy: Always
       command:
         - sleep
