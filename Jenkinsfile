@@ -34,7 +34,7 @@ pipeline {
         stage('Docker BnP') {
            steps {
                container(name: 'kaniko') {
-                   sh 'echo "{\"auths\":{\"https://index.docker.io/v1/\":{\"auth\":\"${$DOCKER_HUB_CREDENTIAL}\"}}}" > docker.json'
+                   sh 'echo "{\"auths\":{\"https://index.docker.io/v1/\":{\"auth\":\"${DOCKER_HUB_CREDENTIAL}\"}}}" > docker.json'
                    sh 'cat docker.json'
                }
            }
