@@ -18,6 +18,7 @@ pipeline {
         }
       }
     }
+
     stage('Test') {
       parallel {
         stage('Unit Tests') {
@@ -29,13 +30,14 @@ pipeline {
         }
       }
     }
+
+
     stage('Package') {
       parallel {
         stage('Create Jarfile') {
           steps {
-            container('kaniko') {
-              echo "{\"auths\":{\"https://index.docker.io/v1/\":{\"auth\":\"$DOCKER_HUB_CREDENTIAL\"}}}" > docker.json
-              sh '/kaniko/executor -f `pwd`/Dockerfile -c `pwd` --force --insecure --skip-tls-verify --cache=true --destination=docker.io/shannonhung/dso-demo'
+            container('maven') {
+              sh 'mvn package -DskipTests'
             }
           }
         }
@@ -46,13 +48,16 @@ pipeline {
       parallel {
         stage('Build Image') {
           steps {
-            container('maven') {
-              sh 'mvn package -DskipTests'
+            container('kaniko') {
+              echo $DOCKER_HUB_CREDENTIAL
+              // echo "{\"auths\":{\"https://index.docker.io/v1/\":{\"auth\":\"$DOCKER_HUB_CREDENTIAL\"}}}" > docker.json
+              // sh '/kaniko/executor -f `pwd`/Dockerfile -c `pwd` --force --insecure --skip-tls-verify --cache=true --destination=docker.io/shannonhung/dso-demo'
             }
           }
         }
       }
     }
+
 
     stage('Deploy to Dev') {
       steps {
